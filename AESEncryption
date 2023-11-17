@@ -1,6 +1,7 @@
 class AESEncryption:
-    def __init__(self, key):
-        self.key = key
+   def __init__(self, key):
+        # Ensure the key is 32 bytes (256 bits)
+        self.key = hashlib.sha256(key.encode()).digest()
         self.backend = default_backend()
 
     def encrypt(self, plaintext):
