@@ -1,0 +1,28 @@
+class AESEncryption:
+    def __init__(self, key):
+        self.key = key
+        self.backend = default_backend()
+
+    def encrypt(self, plaintext):
+        padder = padding.PKCS7(128).padder()
+        padded_data = padder.update(plaintext.encode()) + padder.finalize()
+
+        iv = os.urandom(16)
+        cipher = Cipher(algorithms.AES(self.key), modes.CBC(iv), backend=self.backend)
+        encryptor = cipher.encryptor()
+        ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+
+        return iv + ciphertext
+
+    def decrypt(self, ciphertext):
+        iv = ciphertext[:16]
+        ciphertext = ciphertext[16:]
+
+        cipher = Cipher(algorithms.AES(self.key), modes.CBC(iv), backend=self.backend)
+        decryptor = cipher.decryptor()
+        padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+
+        unpadder = padding.PKCS7(128).unpadder()
+        plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
+
+        return plaintext.decode()
