@@ -1,0 +1,22 @@
+def main():
+    user_key = input("Enter a key for encryption: ")
+    aes = AESEncryption(user_key)
+
+    user_choice = input("Do you want to (E)ncrypt or (D)ecrypt? ")
+    
+    if user_choice.lower() == 'e':
+        original_text = input("Enter the text to encrypt: ")
+        encrypted_text = aes.encrypt(original_text)
+        print(f"Encrypted (Base64 Encoded): {base64.b64encode(encrypted_text).decode()}")
+    elif user_choice.lower() == 'd':
+        encrypted_text = input("Enter the text to decrypt (Base64): ")
+        try:
+            decrypted_text = aes.decrypt(base64.b64decode(encrypted_text))
+            print(f"Decrypted: {decrypted_text}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    else:
+        print("Invalid choice.")
+
+if __name__ == "__main__":
+    main()
